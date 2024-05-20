@@ -27,7 +27,9 @@ JWT_SECRET = config('JWT_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default = False, cast = bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cs350-bookswap-backend-production.up.railway.app']
+
+CSRF_TRUSTED_ORIGINS = ['https://cs350-bookswap-backend-production.up.railway.app']
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
