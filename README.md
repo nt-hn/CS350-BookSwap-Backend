@@ -107,7 +107,7 @@ No parameters are required.
 - `200 OK`: A list of all books (for `GET`).
 - `201 Created`: The created book object (for `POST`).
 - `400 Bad Request`: Validation errors.
-- `403 Forbidden`: Authentication credentials not provided or insufficient permissions.
+- `403 Forbidden`: Authentication credentials not provided.
 
 #### Example
 
@@ -129,7 +129,7 @@ Authorization: Bearer <your_token>
     "isbn": "1234567890123",
     "publication_date": "2022-01-01",
     "publisher": "Publisher Name",
-    "image": <file>,
+    "image": <file>
 }
 ```
 
@@ -146,7 +146,7 @@ End point: `/books/<id>/`
 No parameters are required.
 
 #### Request (PUT)
-- **Authentication required**: Yes
+- **Authentication required**: Yes (Only the owner of the book is able to update)
 - **Request body**:
     - `title`: String (optional)
     - `author`: String (optional)
@@ -155,9 +155,10 @@ No parameters are required.
     - `publisher`: String (optional)
     - `image`: File (optional)
     - `current_owner`: Will by default be the user currently authenticated
+  - Note for `title`, `author`, `isbn`, `publication_date`, and `publisher` make sure you have the previous information in place. Otherwise, the field will be saved empty. Image file will by default be the previous one unless updated.
 
 #### Request (DELETE)
-- **Authentication required**: Yes
+- **Authentication required**: Yes (Only the owner of the book is able to delete)
 
 #### Responses
 - `200 OK`: The requested book object (for `GET`).
