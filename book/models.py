@@ -22,6 +22,7 @@ class Book(models.Model):
     current_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='book_owner')
     requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='book_requester')
     requested = models.BooleanField(default=False)
+    ongoing = models.BooleanField(default=False)
 
     def save(self,*args,**kwargs):
         super().save(*args,**kwargs)

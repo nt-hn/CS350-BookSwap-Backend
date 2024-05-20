@@ -38,7 +38,8 @@ def book_detail(request, id):
     elif request.method == 'PUT':
         if request.user.is_authenticated and book.current_owner == request.user:
             mutable_data = request.data.copy()
-            mutable_data['current_owner'] = request.user.id
+            if not mutable_data['current_owner']:
+                mutable_data['current_owner']= request.user.id
             serializer = BookSerializer(book, data=mutable_data)
             if serializer.is_valid():
                 if "image" not in request.FILES:
@@ -55,3 +56,19 @@ def book_detail(request, id):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'Error': 'Authentication credentials were not provided or user not owner.'}, status=status.HTTP_403_FORBIDDEN)
+
+@api_view(['POST'])
+def search_book_by_title(request):
+    title = request.data.get('title', None)
+    author = request.data.get('author', None)
+    if not title and not author:
+        return Response({'Error': 'At least one of title or author parameters is required'}, status=status.HTTP_400_BAD_REQUEST)
+    filter_criteria = {}
+    if title:
+        filter_criteria['title__icontains'] = title
+    if author:
+        filter_criteria['author__icontains'] = author
+    books = Book.objects.filter(**filter_criteria)
+    serializer = BookSerializer(books, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+    

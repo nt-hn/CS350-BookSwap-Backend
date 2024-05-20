@@ -16,7 +16,12 @@ This document provides details about the backend endpoints available in our appl
     - [Get Chats](#2-get-chats)
     - [Get Messages](#3-get-messages)
     - [Create Messages](#4-create-messages)
+    - [Delete Chat](#5-delete-chat)
     - [WebSocket Usage for Chat](#websocket-usage-for-chat)
+5. [Requests](#requests)
+    - [Get Books Where Requests are Sent](#1-get-books-where-requests-are-sent)
+    - [Get Books Where Requests are Received](#2-get-books-where-requests-are-received)
+    - [Get Books Where Requests are Ongoing](#3-get-books-where-requests-are-ongoing)
 
 ## Admin Panel Access
 
@@ -205,6 +210,57 @@ DELETE /books/1/ HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer <your_token>
 ```
+### Search Book by Title and Author
+
+Endpoint: `/book/search_book_by_title_and_author/`
+
+#### Request (POST)
+
+#### Request Parameters
+- **Request Body**:
+  - `author` (string, required if title not provided): The name of the author to search for.
+  - `title` (string, required if author not provided): The title of the book to search for (required).
+
+#### Example Request
+**URL**: `/book/search_book_by_title_and_author/`
+
+**Request Body**:
+```json
+{
+  "author": "J.K. Rowling"
+}
+```
+
+#### Responses
+- **200 OK**: Returns a list of books matching the search criteria.
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Harry Potter and the Philosopher's Stone",
+      "author": "J.K. Rowling",
+      "isbn": "9780747532743",
+      "publication_date": "1997-06-26",
+      "publisher": "Bloomsbury",
+      "current_owner": 1
+    },
+    {
+      "id": 2,
+      "title": "Harry Potter and the Chamber of Secrets",
+      "author": "J.K. Rowling",
+      "isbn": "9780747538486",
+      "publication_date": "1998-07-02",
+      "publisher": "Bloomsbury",
+      "current_owner": 1
+    }
+  ]
+  ```
+- **400 Bad Request**: Returns an error if neither `title` nor `author` is provided.
+  ```json
+  {
+    "Error": "At least one of title or author parameters is required"
+  }
+  ```
 
 ---
 
@@ -351,6 +407,26 @@ End point: `/chat/create_messages/<int:chat_id>/`
 ]
 ```
 
+#### 5. Delete Chat
+End point: `/chat/delete_chat/<int:chat_id>/`
+- **Method**: `DELETE`
+- **Authentication**: Required
+
+**URL Parameters**:
+- `chat_id` (integer): ID of the chat.
+
+**Responses**:
+- **204 No Content**: Chat successfully deleted.
+- **400 Bad Request**: Invalid request method (not DELETE).
+- **403 Forbidden**: Authentication credentials were not provided.
+
+### Example Usage
+To delete a chat with ID `123`:
+
+1. **HTTP Method**: DELETE
+2. **URL**: `/chat/delete_chat/123/`
+3. **Response**: 204 No Content
+
 ## WebSocket Usage for Chat
 
 ### WebSocket URL
@@ -384,3 +460,45 @@ const chatSocket = new WebSocket(
 - **Send Messages**: Sends messages to the server using WebSocket.
 
 **Note**: This setup enables real-time communication in the chat room using WebSockets.
+
+----
+### Requests
+
+### 1. Get Books Where Requests are Sent
+
+#### Endpoint
+**GET** `/book_request/sent/`
+
+#### Description
+Retrieve books where the authenticated user has sent requests.
+
+#### Responses
+- **200 OK**: Returns a list of books where requests are sent by the authenticated user.
+- **403 Forbidden**: Authentication credentials were not provided.
+
+### 2. Get Books Where Requests are Received
+
+#### Endpoint
+**GET** `/book_request/received/`
+
+#### Description
+Retrieve books where the authenticated user has asked for.
+
+#### Responses
+- **200 OK**: Returns a list of books where requests are received by the authenticated user.
+- **403 Forbidden**: Authentication credentials were not provided.
+
+### 3. Get Books Where Requests are Ongoing
+
+#### Endpoint
+**GET** `/book_request/ongoing/`
+
+#### Description
+Retrieve books where the authenticated user is involved in ongoing requests.
+
+#### Responses
+- **200 OK**: Returns a list of books where requests are ongoing for the authenticated user.
+- **403 Forbidden**: Authentication credentials were not provided.
+
+### Note
+- Ensure that authentication credentials are provided to access the endpoints.

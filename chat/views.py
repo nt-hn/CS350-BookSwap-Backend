@@ -33,6 +33,17 @@ def get_chats(request):
             return Response({'Error': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+def delete_chat(request, chat_id):
+    if request.method == 'DELETE':
+        if request.user.is_authenticated:
+            chats = CreateChat.objects.get(id=chat_id)
+            chats.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'Error': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def get_messeges(request, chat_id):
     if request.method == 'GET':

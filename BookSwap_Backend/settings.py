@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'account_api',
     'book',
     'chat',
+    'book_request',
 ]
 
 MIDDLEWARE = [
