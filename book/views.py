@@ -1,3 +1,57 @@
-from django.shortcuts import render
-
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework import status
+from rest_framework.parsers import FormParser, MultiPartParser
+from .models import Book
+from .serializers import BookSerializer
 # Create your views here.
+
+@parser_classes([MultiPartParser, FormParser])
+@api_view(['GET', 'POST'])
+def book_list(request, format=None):
+    if request.method == 'GET':
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        if request.user.is_authenticated:
+            request.data['current_owner'] = request.user.id
+            serializer = BookSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'Error': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def book_detail(request, id):
+    try:
+        book = Book.objects.get(id=id)
+    except Book.DoesNotExist:
+        return Response({'Error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = BookSerializer(book)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'PUT':
+        if request.user.is_authenticated and book.current_owner == request.user:
+            mutable_data = request.data.copy()
+            mutable_data['current_owner'] = request.user.id
+            serializer = BookSerializer(book, data=mutable_data)
+            if serializer.is_valid():
+                if "image" not in request.FILES:
+                    serializer.validated_data["image"] = book.image
+                serializer.save()
+                return Response(data=serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'Error': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
+    elif request.method == 'DELETE':
+        if request.user.is_authenticated and book.current_owner == request.user:
+            book.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'Error': 'Authentication credentials were not provided or user not owner.'}, status=status.HTTP_403_FORBIDDEN)
