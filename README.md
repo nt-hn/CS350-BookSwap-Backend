@@ -11,6 +11,12 @@ This document provides details about the backend endpoints available in our appl
 3. [Book API](#book-api)
    - [List and Create Books](#list-and-create-books)
    - [Retrieve, Update, and Delete a Book](#retrieve-update-and-delete-a-book)
+4. [Chat API](#chat-api)
+    - [Create Chat](#1-create-chat)
+    - [Get Chats](#2-get-chats)
+    - [Get Messages](#3-get-messages)
+    - [Create Messages](#4-create-messages)
+    - [WebSocket Usage for Chat](#websocket-usage-for-chat)
 
 ## Admin Panel Access
 
@@ -199,3 +205,182 @@ DELETE /books/1/ HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer <your_token>
 ```
+
+---
+
+## Chat API
+
+#### 1. Create Chat
+End point: `/chat/create_chat/`
+- **Method**: `POST`
+- **Authentication**: Required
+
+**Request Body**:
+- `chat_member_2` (integer): user_id of the other chat member.
+
+**Responses**:
+- **201 Created**: Returns the created chat object.
+- **400 Bad Request**: Returns validation errors.
+- **403 Forbidden**: Returns if the user is not authenticated.
+
+#### 2. Get Chats
+End point: `/chat/get_chats/`
+- **Method**: `GET`
+- **Authentication**: Required
+
+**Responses**:
+- **200 OK**: Returns a list of chats involving the authenticated user.
+- **403 Forbidden**: Returns if the user is not authenticated.
+
+#### 3. Get Messages
+End point: `/chat/get_messeges/<int:chat_id>/`
+- **Method**: `GET`
+- **Authentication**: Required
+
+**URL Parameters**:
+- `chat_id` (integer): ID of the chat.
+
+**Responses**:
+- **200 OK**: Returns a list of messages for the specified chat.
+- **403 Forbidden**: Returns if the user is not authenticated.
+
+#### 4. Create Messages
+End point: `/chat/create_messages/<int:chat_id>/`
+- **Method**: `POST`
+- **Authentication**: Required
+
+**URL Parameters**:
+- `chat_id` (integer): ID of the chat.
+
+**Request Body**:
+- `message` (string): The text of the message.
+
+**Responses**:
+- **200 OK**: Returns the updated list of messages for the specified chat.
+- **400 Bad Request**: Returns validation errors or other issues.
+- **403 Forbidden**: Returns if the user is not authenticated.
+
+### Example Responses
+
+**Create Chat - Success**:
+```json
+{
+    "chat_member_1": 1,
+    "chat_member_2": 2,
+}
+```
+
+**Get Chats - Success**:
+```json
+[
+    {
+        "chat_member_1": 1,
+        "chat_member_2": 2,
+    },
+    {
+        "chat_member_1": 1,
+        "chat_member_2": 3,
+    }
+]
+```
+
+**Get Messages - Success**:
+```json
+[
+    {
+        "chatroom": 1,
+        "user": {
+            "id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "johndoe"
+          },
+        "time": "2023-05-20T14:55:00Z",
+        "text": "Hello!"
+    },
+    {
+        "chatroom": 1,
+        "user": {
+            "id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "johndoe"
+          },
+        "time": "2023-05-20T14:56:00Z",
+        "text": "How was your day?"
+    }
+]
+```
+
+**Create Messages - Success**:
+```json
+[
+    {
+        "chatroom": 1,
+        "user": {
+            "id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "johndoe"
+          },
+        "text": "Hello!",
+        "time": "2023-05-20T14:55:00Z"
+    },
+    {
+        "chatroom": 1,
+        "user": {
+            "id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "johndoe"
+          },
+        "text": "How was your day?",
+        "time": "2023-05-20T14:56:00Z"
+    },
+    {
+        "chatroom": 1,
+        "user": {
+            "id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "johndoe"
+          },
+        "text": "How are you?",
+        "time": "2023-05-20T14:57:00Z"
+    }
+]
+```
+
+## WebSocket Usage for Chat
+
+### WebSocket URL
+```javascript
+const chatSocket = new WebSocket(
+    `ws://${backend_host}/ws/chat/${chatroom_id}/`
+);
+```
+
+### Example Usage
+  ```javascript
+  const chatSocket = new WebSocket(
+    `ws://${backend_host}/ws/chat/${chatroom_id}/`
+  );
+  chatSocket.onmessage = (e) => {
+    //TODO: put the logic for sending message here
+  };
+
+  chatSocket.onclose = (e) => {
+      //TODO: put the logic for what to do when connection is closed here
+  };
+  
+  chatSocket.send(
+    //TODO: put the logic for what to do when sending message between connected sockets here
+  );
+  ```
+
+### Usage
+- **Initialize WebSocket**: Establishes a WebSocket connection (`handshake`) to the server.
+- **Receive Messages**: Handles incoming messages pereferably used for updating chat interface.
+- **Send Messages**: Sends messages to the server using WebSocket.
+
+**Note**: This setup enables real-time communication in the chat room using WebSockets.

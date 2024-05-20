@@ -27,6 +27,7 @@ JWT_SECRET = config('JWT_SECRET')
 DEBUG = config('DEBUG', default = False, cast = bool)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -67,6 +68,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
+    'channels',
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
@@ -120,7 +123,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'BookSwap_Backend.wsgi.application'
+ASGI_APPLICATION = 'BookSwap_Backend.asgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

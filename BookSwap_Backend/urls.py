@@ -20,10 +20,12 @@ from django.conf.urls.static import static
 from django.conf import settings
 from account_api import urls
 from book import urls
+from chat import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('account_api/',include('account_api.urls')),
+    path('account_api/', include('account_api.urls')),
     path('book/', include('book.urls')),
+    path('chat/', include('chat.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
