@@ -17,6 +17,7 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_DIR = BASE_DIR /'media'
 STATIC_DIR = BASE_DIR /'static'
+TEMPLATE_DIR = BASE_DIR / 'templates'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -81,6 +82,7 @@ INSTALLED_APPS = [
     'book',
     'chat',
     'book_request',
+    'landing_page',
 ]
 
 MIDDLEWARE = [
@@ -114,7 +116,7 @@ ROOT_URLCONF = 'BookSwap_Backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ TEMPLATE_DIR ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

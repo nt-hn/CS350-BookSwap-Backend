@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookswap API</title>
+    <style>
+        pre {
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+        }
+        code {
+            display: block;
+            max-width: 100%; /* Ensures it does not extend beyond the width of its container */
+            overflow-x: auto; /* Adds a horizontal scrollbar if the content overflows */
+            background-color: #292525; /* Light grey background for better readability */
+            padding: 10px; /* Padding around the code block */
+            border-radius: 5px; /* Rounded corners for a nicer look */
+            font-family: monospace; /* Monospace font for code */
+        }
+    </style>
+  </head>
+  <body
+    style="background-color: #0d1117; color: #ffffff; font-family: sans-serif"
+  >
+    <div style="max-width: 75%; margin: auto">
+      <h1 id="backendendpointsdocumentation" style="text-align: center">
+        Backend Endpoints Documentation
+      </h1>
+
+      <p>
+        This document provides details about the backend endpoints available in
+        our application. Each endpoint is listed with the required request type
+        and necessary fields.
+      </p>
+
+      <h2 id="tableofcontents">Table of Contents</h2>
+
+      <ol>
+        <li><a href="#admin-panel-access">Admin Panel Access</a></li>
+
+        <li>
+          <a href="#account-api">Account API</a>
+
+          <ul>
+            <li><a href="#register">Register</a></li>
+
+            <li><a href="#token">Token</a></li>
+
+            <li><a href="#user">User</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#book-api">Book API</a>
+
+          <ul>
+            <li><a href="#list-and-create-books">List and Create Books</a></li>
+
+            <li>
+              <a href="#retrieve-update-and-delete-a-book"
+                >Retrieve, Update, and Delete a Book</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#chat-api">Chat API</a>
+
+          <ul>
+            <li><a href="#1-create-chat">Create Chat</a></li>
+
+            <li><a href="#2-get-chats">Get Chats</a></li>
+
+            <li><a href="#3-get-messages">Get Messages</a></li>
+
+            <li><a href="#4-create-messages">Create Messages</a></li>
+
+            <li><a href="#5-delete-chat">Delete Chat</a></li>
+
+            <li>
+              <a href="#websocket-usage-for-chat">WebSocket Usage for Chat</a>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#requests">Requests</a>
+
+          <ul>
+            <li>
+              <a href="#1-get-books-where-requests-are-sent"
+                >Get Books Where Requests are Sent</a
+              >
+            </li>
+
+            <li>
+              <a href="#2-get-books-where-requests-are-received"
+                >Get Books Where Requests are Received</a
+              >
+            </li>
+
+            <li>
+              <a href="#3-get-books-where-requests-are-ongoing"
+                >Get Books Where Requests are Ongoing</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2 id="admin-panel-access">Admin Panel Access</h2>
+
+      <h3 id="endpointadmin">Endpoint: <code>/admin/</code></h3>
+
+      <ul>
+        <li><strong>Description</strong>: Access the admin panel.</li>
+
+        <li>
+          <strong>Request Type</strong>: Direct access through a web browser.
+        </li>
+
+        <li>
+          <strong>Authentication</strong>: Admin login credentials are required
+          (<code>email</code>, <code>password</code>).
+        </li>
+      </ul>
+
+      <h2 id="account-api">Account API</h2>
+
+      <h3 id="register">Register</h3>
+
+      <h4 id="endpointaccount_apiregister">
+        Endpoint: <code>/account_api/register/</code>
+      </h4>
+
+      <ul>
+        <li><strong>Description</strong>: Register a new user.</li>
+
+        <li><strong>Request Type</strong>: POST</li>
+
+        <li>
+          <strong>Required Fields</strong>:
+
+          <ul>
+            <li><code>first_name</code>: User's first name.</li>
+
+            <li><code>last_name</code>: User's last name.</li>
+
+            <li><code>email</code>: User's email address.</li>
+
+            <li><code>password</code>: User's password.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4 id="examplerequest">Example Request:</h4>
+
+      <pre><code class="json language-json">
+        {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "john.doe@example.com",
+            "password": "your_password"
+        }
+        </code></pre>
+
+      <h3 id="token">Token</h3>
+
+      <h4 id="endpointaccount_apitoken">
+        Endpoint: <code>/account_api/token/</code>
+      </h4>
+
+      <ul>
+        <li><strong>Description</strong>: Obtain an authentication token.</li>
+
+        <li><strong>Request Type</strong>: POST</li>
+
+        <li>
+          <strong>Required Fields</strong>:
+
+          <ul>
+            <li><code>email</code>: User's email address.</li>
+
+            <li><code>password</code>: User's password.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4 id="examplerequest-1">Example Request:</h4>
+
+      <pre><code class="json language-json">
+        {
+            "email": "john.doe@example.com",
+            "password": "your_password"
+        }
+        </code></pre>
+
+      <h3 id="user">User</h3>
+
+      <h4 id="endpointaccount_apiuser">
+        Endpoint: <code>/account_api/user/</code>
+      </h4>
+
+      <ul>
+        <li>
+          <strong>Description</strong>: Retrieve the user details from the
+          token.
+        </li>
+
+        <li><strong>Request Type</strong>: GET</li>
+
+        <li>
+          <strong>Headers</strong>:
+
+          <ul>
+            <li>Include the Bearer Token in the header.</li>
+
+            <li><code>Authorization: Bearer &lt;token_value&gt;</code></li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4 id="exampleheader">Example Header:</h4>
+
+      <pre><code>Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+        </code></pre>
+
+      <h2 id="notes">Notes</h2>
+
+      <ul>
+        <li>
+          Ensure the Bearer Token is included correctly in the headers for
+          endpoints that require it.
+        </li>
+
+        <li>
+          The admin panel is accessible directly via a web browser and does not
+          involve API calls. Use your admin credentials to log in.
+        </li>
+      </ul>
+
+      <hr />
+
+      <h1 id="book-api">Book API</h1>
+
+      <h3 id="list-and-create-books">List and Create Books</h3>
+
+      <p>End point: <code>/book/</code></p>
+
+      <h4 id="methods">Methods</h4>
+
+      <ul>
+        <li><code>GET</code>: Retrieve a list of all books.</li>
+
+        <li><code>POST</code>: Create a new book.</li>
+      </ul>
+
+      <h4 id="requestget">Request (GET)</h4>
+
+      <p>No parameters are required.</p>
+
+      <h4 id="requestpost">Request (POST)</h4>
+
+      <ul>
+        <li><strong>Authentication required</strong>: Yes</li>
+
+        <li>
+          <strong>Request body</strong>:
+
+          <ul>
+            <li><code>title</code>: String</li>
+
+            <li><code>author</code>: String</li>
+
+            <li><code>isbn</code>: String</li>
+
+            <li>
+              <code>publication_date</code>: String (optional, format:
+              'YYYY-MM-DD')
+            </li>
+
+            <li><code>publisher</code>: String (optional)</li>
+
+            <li><code>image</code>: File (optional)</li>
+
+            <li>
+              <code>current_owner</code>: Will by default be set as the
+              authenticated user.
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4 id="responses">Responses</h4>
+
+      <ul>
+        <li>
+          <code>200 OK</code>: A list of all books (for <code>GET</code>).
+        </li>
+
+        <li>
+          <code>201 Created</code>: The created book object (for
+          <code>POST</code>).
+        </li>
+
+        <li><code>400 Bad Request</code>: Validation errors.</li>
+
+        <li>
+          <code>403 Forbidden</code>: Authentication credentials not provided.
+        </li>
+      </ul>
+
+      <h4 id="example">Example</h4>
+
+      <p><strong>GET Request</strong></p>
+
+      <pre><code class="http language-http">GET /books/ HTTP/1.1
+        Content-Type: application/json
+        </code></pre>
+
+      <p><strong>POST Request</strong></p>
+
+      <pre><code class="http language-http">POST /books/ HTTP/1.1
+        Content-Type: multipart/form-data
+        Authorization: Bearer &amp;lt;your_token&amp;gt;
+        
+        {
+            "title": "Book Title",
+            "author": "Author Name",
+            "isbn": "1234567890123",
+            "publication_date": "2022-01-01",
+            "publisher": "Publisher Name",
+            "image": &amp;lt;file&amp;gt;
+        }
+        </code></pre>
+
+      <h3 id="retrieve-update-and-delete-a-book">
+        Retrieve, Update, and Delete a Book
+      </h3>
+
+      <p>End point: <code>/books/&lt;id&gt;/</code></p>
+
+      <h4 id="methods-1">Methods</h4>
+
+      <ul>
+        <li><code>GET</code>: Retrieve a specific book by its ID.</li>
+
+        <li><code>PUT</code>: Update a specific book by its ID.</li>
+
+        <li><code>DELETE</code>: Delete a specific book by its ID.</li>
+      </ul>
+
+      <h4 id="requestget-1">Request (GET)</h4>
+
+      <p>No parameters are required.</p>
+
+      <h4 id="requestput">Request (PUT)</h4>
+
+      <ul>
+        <li>
+          <strong>Authentication required</strong>: Yes (Only the owner of the
+          book is able to update)
+        </li>
+
+        <li>
+          <strong>Request body</strong>:
+
+          <ul>
+            <li><code>title</code>: String (optional)</li>
+
+            <li><code>author</code>: String (optional)</li>
+
+            <li><code>isbn</code>: String (optional)</li>
+
+            <li>
+              <code>publication_date</code>: String (optional, format:
+              'YYYY-MM-DD')
+            </li>
+
+            <li><code>publisher</code>: String (optional)</li>
+
+            <li><code>image</code>: File (optional)</li>
+
+            <li>
+              <code>current_owner</code>: Will by default be the user currently
+              authenticated
+            </li>
+
+            <li>
+              Note for <code>title</code>, <code>author</code>,
+              <code>isbn</code>, <code>publication_date</code>, and
+              <code>publisher</code> make sure you have the previous information
+              in place. Otherwise, the field will be saved empty. Image file
+              will by default be the previous one unless updated.
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4 id="requestdelete">Request (DELETE)</h4>
+
+      <ul>
+        <li>
+          <strong>Authentication required</strong>: Yes (Only the owner of the
+          book is able to delete)
+        </li>
+      </ul>
+
+      <h4 id="responses-1">Responses</h4>
+
+      <ul>
+        <li>
+          <code>200 OK</code>: The requested book object (for <code>GET</code>).
+        </li>
+
+        <li>
+          <code>200 OK</code>: The updated book object (for <code>PUT</code>).
+        </li>
+
+        <li>
+          <code>204 No Content</code>: The book was successfully deleted (for
+          <code>DELETE</code>).
+        </li>
+
+        <li><code>400 Bad Request</code>: Validation errors.</li>
+
+        <li>
+          <code>403 Forbidden</code>: Authentication credentials not provided,
+          insufficient permissions, or user is not the owner.
+        </li>
+
+        <li>
+          <code>404 Not Found</code>: The book with the specified ID does not
+          exist.
+        </li>
+      </ul>
+
+      <h4 id="example-1">Example</h4>
+
+      <p><strong>GET Request</strong></p>
+
+      <pre><code class="http language-http">GET /books/1/ HTTP/1.1
+        Content-Type: application/json
+        Authorization: Bearer &amp;lt;your_token&amp;gt;
+        </code></pre>
+
+      <p><strong>PUT Request</strong></p>
+
+      <pre><code class="http language-http">PUT /books/1/ HTTP/1.1
+        Content-Type: multipart/form-data
+        Authorization: Bearer &amp;lt;your_token&amp;gt;
+        
+        {
+            "title": "Updated Book Title",
+            "author": "Updated Author Name",
+            "isbn": "1234567890123",
+            "publication_date": "2023-01-01",
+            "publisher": "Updated Publisher Name",
+            "image": &amp;lt;file&amp;gt;
+        }
+        </code></pre>
+
+      <p><strong>DELETE Request</strong></p>
+
+      <pre><code class="http language-http">DELETE /books/1/ HTTP/1.1
+        Content-Type: application/json
+        Authorization: Bearer &amp;lt;your_token&amp;gt;
+        </code></pre>
+
+      <h3 id="searchbookbytitleandauthor">Search Book by Title and Author</h3>
+
+      <p>Endpoint: <code>/book/search_book_by_title_and_author/</code></p>
+
+      <h4 id="requestpost-1">Request (POST)</h4>
+
+      <h4 id="requestparameters">Request Parameters</h4>
+
+      <ul>
+        <li>
+          <strong>Request Body</strong>:
+
+          <ul>
+            <li>
+              <code>author</code> (string, required if title not provided): The
+              name of the author to search for.
+            </li>
+
+            <li>
+              <code>title</code> (string, required if author not provided): The
+              title of the book to search for (required).
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4 id="examplerequest-2">Example Request</h4>
+
+      <p>
+        <strong>URL</strong>:
+        <code>/book/search_book_by_title_and_author/</code>
+      </p>
+
+      <p><strong>Request Body</strong>:</p>
+
+      <pre><code class="json language-json">
+        {
+              "author": "J.K. Rowling"
+        }
+        </code></pre>
+
+      <h4 id="responses-2">Responses</h4>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns a list of books matching the search
+          criteria.
+          <pre><code>
+        [
+            {
+                "id": 1,
+                "title": "Harry Potter and the Philosopher's Stone",
+                "author": "J.K. Rowling",
+                "isbn": "9780747532743",
+                "publication_date": "1997-06-26",
+                "publisher": "Bloomsbury",
+                "current_owner": 1
+            },
+            {
+                "id": 2,
+                "title": "Harry Potter and the Chamber of Secrets",
+                "author": "J.K. Rowling",
+                "isbn": "9780747538486",
+                "publication_date": "1998-07-02",
+                "publisher": "Bloomsbury",
+                "current_owner": 1
+            }
+        ]
+
+    </code></pre>
+        </li>
+
+        <li>
+          <strong>400 Bad Request</strong>: Returns an error if neither
+          <code>title</code> nor <code>author</code> is provided.
+          <code
+            >json { "Error": "At least one of title or author parameters is
+            required" }
+          </code>
+        </li>
+      </ul>
+
+      <hr />
+
+      <h2 id="chat-api">Chat API</h2>
+
+      <h4 id="1-create-chat">1. Create Chat</h4>
+
+      <p>End point: <code>/chat/create_chat/</code></p>
+
+      <ul>
+        <li><strong>Method</strong>: <code>POST</code></li>
+
+        <li><strong>Authentication</strong>: Required</li>
+      </ul>
+
+      <p><strong>Request Body</strong>:</p>
+
+      <ul>
+        <li>
+          <code>chat_member_2</code> (integer): user_id of the other chat
+          member.
+        </li>
+      </ul>
+
+      <p><strong>Responses</strong>:</p>
+
+      <ul>
+        <li><strong>201 Created</strong>: Returns the created chat object.</li>
+
+        <li><strong>400 Bad Request</strong>: Returns validation errors.</li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Returns if the user is not
+          authenticated.
+        </li>
+      </ul>
+
+      <h4 id="2-get-chats">2. Get Chats</h4>
+
+      <p>End point: <code>/chat/get_chats/</code></p>
+
+      <ul>
+        <li><strong>Method</strong>: <code>GET</code></li>
+
+        <li><strong>Authentication</strong>: Required</li>
+      </ul>
+
+      <p><strong>Responses</strong>:</p>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns a list of chats involving the
+          authenticated user.
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Returns if the user is not
+          authenticated.
+        </li>
+      </ul>
+
+      <h4 id="3-get-messages">3. Get Messages</h4>
+
+      <p>End point: <code>/chat/get_messeges/&lt;int:chat_id&gt;/</code></p>
+
+      <ul>
+        <li><strong>Method</strong>: <code>GET</code></li>
+
+        <li><strong>Authentication</strong>: Required</li>
+      </ul>
+
+      <p><strong>URL Parameters</strong>:</p>
+
+      <ul>
+        <li><code>chat_id</code> (integer): ID of the chat.</li>
+      </ul>
+
+      <p><strong>Responses</strong>:</p>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns a list of messages for the specified
+          chat.
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Returns if the user is not
+          authenticated.
+        </li>
+      </ul>
+
+      <h4 id="4-create-messages">4. Create Messages</h4>
+
+      <p>End point: <code>/chat/create_messages/&lt;int:chat_id&gt;/</code></p>
+
+      <ul>
+        <li><strong>Method</strong>: <code>POST</code></li>
+
+        <li><strong>Authentication</strong>: Required</li>
+      </ul>
+
+      <p><strong>URL Parameters</strong>:</p>
+
+      <ul>
+        <li><code>chat_id</code> (integer): ID of the chat.</li>
+      </ul>
+
+      <p><strong>Request Body</strong>:</p>
+
+      <ul>
+        <li><code>message</code> (string): The text of the message.</li>
+      </ul>
+
+      <p><strong>Responses</strong>:</p>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns the updated list of messages for the
+          specified chat.
+        </li>
+
+        <li>
+          <strong>400 Bad Request</strong>: Returns validation errors or other
+          issues.
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Returns if the user is not
+          authenticated.
+        </li>
+      </ul>
+
+      <h3 id="exampleresponses">Example Responses</h3>
+
+      <p><strong>Create Chat - Success</strong>:</p>
+
+      <pre><code class="json language-json">
+        {
+                "chat_member_1": 1,
+                "chat_member_2": 2,
+        }
+        </code></pre>
+
+      <p><strong>Get Chats - Success</strong>:</p>
+
+      <pre><code class="json language-json">
+        [
+            {
+                "chat_member_1": 1,
+                "chat_member_2": 2,
+            },
+            {
+                "chat_member_1": 1,
+                "chat_member_2": 3,
+            }
+        ]
+        </code></pre>
+
+      <p><strong>Get Messages - Success</strong>:</p>
+
+      <pre><code class="json language-json">
+        [
+            {
+                "chatroom": 1,
+                "user": {
+                    "id": 1,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "johndoe"
+                  },
+                "time": "2023-05-20T14:55:00Z",
+                "text": "Hello!"
+            },
+            {
+                "chatroom": 1,
+                "user": {
+                    "id": 1,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "johndoe"
+                  },
+                "time": "2023-05-20T14:56:00Z",
+                "text": "How was your day?"
+            }
+        ]
+        </code></pre>
+
+      <p><strong>Create Messages - Success</strong>:</p>
+
+      <pre><code class="json language-json">
+        [
+            {
+                "chatroom": 1,
+                "user": {
+                    "id": 1,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "johndoe"
+                  },
+                "text": "Hello!",
+                "time": "2023-05-20T14:55:00Z"
+            },
+            {
+                "chatroom": 1,
+                "user": {
+                    "id": 1,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "johndoe"
+                  },
+                "text": "How was your day?",
+                "time": "2023-05-20T14:56:00Z"
+            },
+            {
+                "chatroom": 1,
+                "user": {
+                    "id": 1,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "johndoe"
+                  },
+                "text": "How are you?",
+                "time": "2023-05-20T14:57:00Z"
+            }
+        ]
+        </code></pre>
+
+      <h4 id="5-delete-chat">5. Delete Chat</h4>
+
+      <p>End point: <code>/chat/delete_chat/&lt;int:chat_id&gt;/</code></p>
+
+      <ul>
+        <li><strong>Method</strong>: <code>DELETE</code></li>
+
+        <li><strong>Authentication</strong>: Required</li>
+      </ul>
+
+      <p><strong>URL Parameters</strong>:</p>
+
+      <ul>
+        <li><code>chat_id</code> (integer): ID of the chat.</li>
+      </ul>
+
+      <p><strong>Responses</strong>:</p>
+
+      <ul>
+        <li><strong>204 No Content</strong>: Chat successfully deleted.</li>
+
+        <li>
+          <strong>400 Bad Request</strong>: Invalid request method (not DELETE).
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Authentication credentials were not
+          provided.
+        </li>
+      </ul>
+
+      <h3 id="exampleusage">Example Usage</h3>
+
+      <p>To delete a chat with ID <code>123</code>:</p>
+
+      <ol>
+        <li><strong>HTTP Method</strong>: DELETE</li>
+
+        <li><strong>URL</strong>: <code>/chat/delete_chat/123/</code></li>
+
+        <li><strong>Response</strong>: 204 No Content</li>
+      </ol>
+
+      <h2 id="websocket-usage-for-chat">WebSocket Usage for Chat</h2>
+
+      <h3 id="websocketurl">WebSocket URL</h3>
+
+        <pre><code class="javascript language-javascript">
+    const chatSocket = new WebSocket(
+        `ws://${backend_host}/ws/chat/${chatroom_id}/`
+    );
+        </code></pre>
+
+      <h3 id="exampleusage-1">Example Usage</h3>
+
+      <pre><code>
+        const chatSocket = new WebSocket(
+            ws://${backend<em>host}/ws/chat/${chatroom</em>id}/`
+        );  
+        chatSocket.onmessage = (e) => {
+            //TODO: put the logic for sending message here
+        };
+        
+        chatSocket.onclose = (e) => {
+            //TODO: put the logic for connection closing here
+        };
+        
+        chatSocket.send(
+            //TODO: put the logic for sending message between connected sockets here
+        );
+        </code></pre>
+
+      <h3 id="usage">Usage</h3>
+
+      <ul>
+        <li>
+          <strong>Initialize WebSocket</strong>: Establishes a WebSocket
+          connection (<code>handshake</code>) to the server.
+        </li>
+
+        <li>
+          <strong>Receive Messages</strong>: Handles incoming messages
+          pereferably used for updating chat interface.
+        </li>
+
+        <li>
+          <strong>Send Messages</strong>: Sends messages to the server using
+          WebSocket.
+        </li>
+      </ul>
+
+      <p>
+        <strong>Note</strong>: This setup enables real-time communication in the
+        chat room using WebSockets.
+      </p>
+
+      <hr />
+
+      <h3 id="requests">Requests</h3>
+
+      <h3 id="1-get-books-where-requests-are-sent">
+        1. Get Books Where Requests are Sent
+      </h3>
+
+      <h4 id="endpoint">Endpoint</h4>
+
+      <p><strong>GET</strong> <code>/book_request/sent/</code></p>
+
+      <h4 id="description">Description</h4>
+
+      <p>Retrieve books where the authenticated user has sent requests.</p>
+
+      <h4 id="responses-3">Responses</h4>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns a list of books where requests are
+          sent by the authenticated user.
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Authentication credentials were not
+          provided.
+        </li>
+      </ul>
+
+      <h3 id="2-get-books-where-requests-are-received">
+        2. Get Books Where Requests are Received
+      </h3>
+
+      <h4 id="endpoint-1">Endpoint</h4>
+
+      <p><strong>GET</strong> <code>/book_request/received/</code></p>
+
+      <h4 id="description-1">Description</h4>
+
+      <p>Retrieve books where the authenticated user has asked for.</p>
+
+      <h4 id="responses-4">Responses</h4>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns a list of books where requests are
+          received by the authenticated user.
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Authentication credentials were not
+          provided.
+        </li>
+      </ul>
+
+      <h3 id="3-get-books-where-requests-are-ongoing">
+        3. Get Books Where Requests are Ongoing
+      </h3>
+
+      <h4 id="endpoint-2">Endpoint</h4>
+
+      <p><strong>GET</strong> <code>/book_request/ongoing/</code></p>
+
+      <h4 id="description-2">Description</h4>
+
+      <p>
+        Retrieve books where the authenticated user is involved in ongoing
+        requests.
+      </p>
+
+      <h4 id="responses-5">Responses</h4>
+
+      <ul>
+        <li>
+          <strong>200 OK</strong>: Returns a list of books where requests are
+          ongoing for the authenticated user.
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>: Authentication credentials were not
+          provided.
+        </li>
+      </ul>
+
+      <h3 id="note">Note</h3>
+
+      <ul>
+        <li>
+          Ensure that authentication credentials are provided to access the
+          endpoints.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
