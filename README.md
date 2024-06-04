@@ -113,6 +113,8 @@ No parameters are required.
     - `publisher`: String (optional)
     - `image`: File (optional)
     - `current_owner`: Will by default be set as the authenticated user.
+    - `genre`: String(Optional: will default to Fiction)
+    - `isPrivate`: Boolean(Optional: will default to False)
 
 #### Responses
 - `200 OK`: A list of all books (for `GET`).

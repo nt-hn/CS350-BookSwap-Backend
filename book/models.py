@@ -15,6 +15,8 @@ def image_directory_name(instance,filename):
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
+    genre = models.CharField(max_length=255, default="Fiction")
+    isPrivate = models.BooleanField(default=False)
     isbn = models.CharField(max_length=13, unique=True)
     publication_date = models.DateField(null=True, blank=True)
     publisher = models.CharField(max_length=255, null=True, blank=True)
