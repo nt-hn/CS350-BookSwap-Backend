@@ -10,7 +10,7 @@ from .serializers import BookSerializer
 @api_view(['GET', 'POST'])
 def book_list(request, format=None):
     if request.method == 'GET':
-        books = Book.objects.all()
+        books = Book.objects.exclude(isPrivate=True)
         serializer = BookSerializer(books, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
@@ -68,6 +68,7 @@ def search_book_by_title(request):
         filter_criteria['title__icontains'] = title
     if author:
         filter_criteria['author__icontains'] = author
+    filter_criteria['isPrivate'] = False
     books = Book.objects.filter(**filter_criteria)
     serializer = BookSerializer(books, many=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
