@@ -11,6 +11,7 @@ This document provides details about the backend endpoints available in our appl
 3. [Book API](#book-api)
    - [List and Create Books](#list-and-create-books)
    - [Retrieve, Update, and Delete a Book](#retrieve-update-and-delete-a-book)
+   - [Search user Book Shelf](#search-user-Book-Shelf)
 4. [Chat API](#chat-api)
     - [Create Chat](#1-create-chat)
     - [Get Chats](#2-get-chats)
@@ -263,7 +264,22 @@ Endpoint: `/book/search_book_by_title_and_author/`
     "Error": "At least one of title or author parameters is required"
   }
   ```
+### Search user Book Shelf
+Endpoint: `/book/user_books/`
 
+#### Request (GET): Authentication Required
+
+### Search Book shelf that are in private
+
+Endpoint: `/book/user_books/private/`
+
+#### Request (GET): Authentication Required
+
+### Search Book shelf that are in public
+
+Endpoint: `/book/user_books/public/`
+
+#### Request (GET): Authentication Required
 ---
 
 ## Chat API

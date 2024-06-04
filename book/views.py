@@ -72,4 +72,33 @@ def search_book_by_title(request):
     books = Book.objects.filter(**filter_criteria)
     serializer = BookSerializer(books, many=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
-    
+
+@api_view(['GET'])
+def user_books(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        user_books = Book.objects.filter(current_owner=current_user)
+        serializer = BookSerializer(user_books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'Error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+def user_private_books(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        private_books = Book.objects.filter(current_owner=current_user, isPrivate=True)
+        serializer = BookSerializer(private_books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'Error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])   
+def user_public_books(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        public_books = Book.objects.filter(current_owner=current_user, isPrivate=False)
+        serializer = BookSerializer(public_books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'Error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
