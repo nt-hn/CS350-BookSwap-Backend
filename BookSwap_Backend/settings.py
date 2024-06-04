@@ -26,7 +26,7 @@ TEMPLATE_DIR = BASE_DIR / 'templates'
 SECRET_KEY = config('SECRET_KEY')
 JWT_SECRET = config('JWT_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default = False, cast = bool)
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cs350-bookswap-backend-production.up.railway.app']
 

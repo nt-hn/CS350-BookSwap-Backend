@@ -30,6 +30,8 @@ class Book(models.Model):
 
         if self.image:
             image = Image.open(self.image.path)
+            if image.mode in ("RGBA", "p"):
+                image = image.convert("RGB")
             image.thumbnail(SIZE, Image.LANCZOS)
             image.save(self.image.path)
     
