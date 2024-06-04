@@ -89,6 +89,18 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 - Ensure the Bearer Token is included correctly in the headers for endpoints that require it.
 - The admin panel is accessible directly via a web browser and does not involve API calls. Use your admin credentials to log in.
 
+### Another User
+
+#### Endpoint: `/account_api/get_user/`
+- **Description**: Retrieve the user details from the id.
+- **Request Type**: GET
+- **Headers**: 
+  - Include the Bearer Token in the header.
+    - `Authorization: Bearer <token_value>`
+- **Body**: 
+  - Include the user id.
+    - `get_user: id`
+
 ---
 
 # Book API
