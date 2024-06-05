@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
 from .models import Book
 from .serializers import BookSerializer
+from account_api.models import User
 # Create your views here.
 
 @parser_classes([MultiPartParser, FormParser])
@@ -38,7 +39,7 @@ def book_detail(request, id):
     elif request.method == 'PUT':
         if request.user.is_authenticated and book.current_owner == request.user:
             mutable_data = request.data.copy()
-            if not mutable_data['current_owner']:
+            if not 'current_owner' in mutable_data:
                 mutable_data['current_owner']= request.user.id
             serializer = BookSerializer(book, data=mutable_data)
             if serializer.is_valid():
@@ -99,6 +100,16 @@ def user_public_books(request):
         current_user = request.user
         public_books = Book.objects.filter(current_owner=current_user, isPrivate=False)
         serializer = BookSerializer(public_books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'Error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])   
+def get_user_books(request, id):
+    if request.user.is_authenticated:
+        user = User.objects.filter(id=id)[0]
+        user_books = Book.objects.filter(current_owner = user)
+        serializer = BookSerializer(user_books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response({'Error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)

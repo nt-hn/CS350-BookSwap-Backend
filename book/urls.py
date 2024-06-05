@@ -8,4 +8,5 @@ urlpatterns = [
     path('user_books/', views.user_books, name="user_books"),
     path('user_books/private/', views.user_private_books, name="user_books_private"),
     path('user_books/public/', views.user_public_books, name="user_books_public"),
+    path('user/<int:id>/', views.get_user_books, name="get_user_books")
 ]
