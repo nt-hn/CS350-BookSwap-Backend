@@ -93,8 +93,6 @@ def reject_book_request(request, id):
         if request.user.is_authenticated:
             try:
                 book = Book.objects.get(id=id)
-                if book.requested:
-                    return Response({'Error': 'Book is already requested.'}, status=status.HTTP_226_IM_USED)
                 
                 book.requester = None
                 book.requested = False
