@@ -92,7 +92,7 @@ def reject_book_request(request, id):
     if request.method == 'POST':
         if request.user.is_authenticated:
             try:
-                book = Book.objects.get(id=id)
+                book = Book.objects.filter(id=id)[0]
                 
                 book.requester = None
                 book.requested = False

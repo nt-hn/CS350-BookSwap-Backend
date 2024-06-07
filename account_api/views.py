@@ -32,7 +32,7 @@ def user_api(request):
 def get_user_from_id(request, id):
     if request.user.is_authenticated:
         user = models.User.objects.filter(id=id)[0]
-        content = {'first_name':user.first_name, 'last_name':user.last_name}
+        content = {'first_name':user.first_name, 'last_name':user.last_name, 'email': user.email}
         return response.Response(data=content, status=status.HTTP_200_OK)
     else:
         return response.Response({'Error': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
